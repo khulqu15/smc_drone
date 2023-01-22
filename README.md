@@ -1,5 +1,5 @@
 
-# Sliding Mode Controll
+# Sliding Mode Control
 
 Sliding mode control (SMC) is a type of robust control method that is used to stabilize systems that are subject to uncertainties, such as drones. It is a nonlinear control technique that uses a sliding surface to ensure that the system's state remains within a certain region.
 
