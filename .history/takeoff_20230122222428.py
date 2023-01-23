@@ -6,7 +6,7 @@ import argparse
 
 def connectCopter():
   parser = argparse.ArgumentParser(description='commands')
-  parser.add_argument('--connect', default="127.0.0.1:14550")
+  parser.add_argument('--connect')
   args = parser.parse_args()
   
   str_connection = args.connect
@@ -21,10 +21,9 @@ def arm_and_takeoff(aTargetAltitude):
   
   print("Vehicle is now armable")
   vehicle.mode = dronekit.VehicleMode("GUIDED")
-  print(vehicle.mode)
   while vehicle.mode != "GUIDED":
     print("Waiting for vehicle to enter mode GUIDED")
-    time.sleep(1)
+    time.sleep()
     
   vehicle.armed = True
   while vehicle.armed == False:

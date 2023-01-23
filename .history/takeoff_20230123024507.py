@@ -11,7 +11,7 @@ def connectCopter():
   
   str_connection = args.connect
   baud_rate = 57600
-  vehicle = dronekit.connect(str_connection, baud=baud_rate, wait_ready=True)
+  vehicle = dronekit.connect(, baud=baud_rate, wait_ready=True)
   return vehicle
 
 def arm_and_takeoff(aTargetAltitude):
@@ -21,10 +21,9 @@ def arm_and_takeoff(aTargetAltitude):
   
   print("Vehicle is now armable")
   vehicle.mode = dronekit.VehicleMode("GUIDED")
-  print(vehicle.mode)
   while vehicle.mode != "GUIDED":
     print("Waiting for vehicle to enter mode GUIDED")
-    time.sleep(1)
+    time.sleep()
     
   vehicle.armed = True
   while vehicle.armed == False:
