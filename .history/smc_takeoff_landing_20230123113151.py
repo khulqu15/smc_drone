@@ -28,6 +28,8 @@ while True:
     sliding_mode_control(vehicle, 2)
     attitude = vehicle.attitude
     print("Roll: %f, Pitch: %f, Yaw: %f, Alt: %f" % (attitude.roll, attitude.pitch, attitude.yaw, vehicle.location.global_relative_frame.alt))
+    print("Alt :" + vehicle.location.global_relative_frame.alt)
+    print(vehicle.location.global_relative_frame.alt)
     if vehicle.location.global_relative_frame.alt >= 2*0.95:
         print("Reached altitude")
         break
