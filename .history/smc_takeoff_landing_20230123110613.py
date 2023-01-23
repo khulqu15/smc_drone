@@ -33,5 +33,3 @@ while True:
 
 # Land
 vehicle.mode = dronekit.VehicleMode("LAND")
-
-vehicle.close()
