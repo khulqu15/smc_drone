@@ -21,14 +21,14 @@ def sliding_mode_control(vehicle, desired_altitude):
 
 # Takeoff
 vehicle.armed = True
-vehicle.simple_takeoff(1.2)
+vehicle.simple_takeoff(1)
 
 # Wait for the drone to reach the desired altitude
 while True:
-    sliding_mode_control(vehicle, 1.2)
+    sliding_mode_control(vehicle, 1)
     attitude = vehicle.attitude
     print("Roll: %f, Pitch: %f, Yaw: %f, Alt: %f" % (attitude.roll, attitude.pitch, attitude.yaw, vehicle.location.global_relative_frame.alt))
-    if vehicle.location.global_relative_frame.alt >= 1.2*0.95:
+    if vehicle.location.global_relative_frame.alt >= 1*0.95:
         print("Reached altitude")
         break
     time.sleep(1)
