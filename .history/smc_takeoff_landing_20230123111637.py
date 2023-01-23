@@ -25,10 +25,8 @@ vehicle.simple_takeoff(2)
 
 # Wait for the drone to reach the desired altitude
 while True:
-    sliding_mode_control(vehicle, 2)
-    print("Alt :")
-    print(vehicle.location.global_relative_frame.alt)
-    if vehicle.location.global_relative_frame.alt >= 2*0.95:
+    sliding_mode_control(vehicle, 5)
+    if vehicle.location.global_relative_frame.alt >= 5*0.95:
         print("Reached altitude")
         break
     time.sleep(1)
