@@ -8,7 +8,6 @@ vehicle = dronekit.connect('/dev/ttyACM0', wait_ready=True)
 vehicle.armed = True
 vehicle.simple_takeoff(altitute_target)
 
-# Define the initial state and measurement matrix for the Kalman filter
 kf = pykalman.KalmanFilter(transition_matrices=[[1, 1], [0, 1]],
                   observation_matrices=[[1, 0]],
                   initial_state_mean=[0, 0],
