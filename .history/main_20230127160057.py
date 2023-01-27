@@ -44,15 +44,7 @@ def sliding_mode_control(vehicle, desired_altitude):
 while True:
   sliding_mode_control(vehicle, altitute_target)
   attitude = vehicle.attitude
-  counter = lidar.in_waiting
-    if counter > 8:
-        bytes_serial = lidar.read(9)
-        lidar.reset_input_buffer()
-        if bytes_serial[0] == 0x59 and bytes_serial[1] == 0x59: # check first two bytes
-            distance = bytes_serial[2] + bytes_serial[3]*256 # distance in next two bytes
-            strength = bytes_serial[4] + bytes_serial[5]*256 # signal strength in next two bytes
-            temperature = bytes_serial[6] + bytes_serial[7]*256 # temp in next two bytes
-            temperature = (temperature/8.0) - 256.0 
+  distance, strength, temperature = read_lidar_data()
   print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
               format(distance,strength,temperature))
   print("Roll: %f, Pitch: %f, Yaw: %f, Alt: %f" % (attitude.roll, attitude.pitch, attitude.yaw, vehicle.location.global_relative_frame.alt))
