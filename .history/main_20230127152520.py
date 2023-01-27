@@ -25,6 +25,7 @@ def read_lidar_data():
             temperature = (temperature/8.0) - 256.0 # temp scaling and offset
             return distance/100.0,strength,temperature
         
+
 kf = pykalman.KalmanFilter(transition_matrices=[[1, 1], [0, 1]],
                   observation_matrices=[[1, 0]],
                   initial_state_mean=[0, 0],
@@ -44,9 +45,7 @@ def sliding_mode_control(vehicle, desired_altitude):
 while True:
   sliding_mode_control(vehicle, altitute_target)
   attitude = vehicle.attitude
-  distance, strength, temperature = read_lidar_data()
-  print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
-              format(distance,strength,temperature))
+  read_lidar_data()
   print("Roll: %f, Pitch: %f, Yaw: %f, Alt: %f" % (attitude.roll, attitude.pitch, attitude.yaw, vehicle.location.global_relative_frame.alt))
   if vehicle.location.global_relative_frame.alt >= 1.2*0.95:
       print("Reached altitude")
