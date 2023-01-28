@@ -6,12 +6,12 @@ import pykalman
 
 altitute_target = 1.5
 hovering_time = 20
-lidar = serial.Serial('/dev/serial0', baudrate=115200, timeout=0)
 vehicle = dronekit.connect('/dev/ttyACM0', wait_ready=True)
 # vehicle = dronekit.connect('127.0.0.1:14551', wait_ready=True)
 vehicle.mode = dronekit.VehicleMode("GUIDED")
 vehicle.armed = True
 vehicle.simple_takeoff(altitute_target)
+lidar = serial.Serial('/dev/serial0', baudrate=115200, timeout=0)
 
 def read_lidar_data():
     while True:
