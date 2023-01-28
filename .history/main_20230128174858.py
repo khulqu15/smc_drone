@@ -59,7 +59,6 @@ while True:
 
     print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
         format(distance,strength,temperature))
-
     print("Roll: %f, Pitch: %f, Yaw: %f, Alt: %f" % (attitude.roll, attitude.pitch, attitude.yaw, vehicle.location.global_relative_frame.alt))
     print("Global Relative")
     print(vehicle.location.global_relative_frame)
