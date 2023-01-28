@@ -14,6 +14,7 @@ vehicle.armed = True
 vehicle.simple_takeoff(altitute_target)
 
 def read_lidar_data():
+    distance 0
     while True:
         counter = lidar.in_waiting # count the number of bytes of the serial port
         if counter > 8:
@@ -49,6 +50,7 @@ if lidar.is_open == False:
 while True:
     sliding_mode_control(vehicle, altitute_target)
     attitude = vehicle.attitude
+    counter = lidar.in_waiting
     distance = read_lidar_data() # read values
     print('Distance: %f m' % (distance)) # print sample data
     print("Roll: %f, Pitch: %f, Yaw: %f, Alt: %f" % (attitude.roll, attitude.pitch, attitude.yaw, vehicle.location.global_relative_frame.alt))
