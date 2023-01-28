@@ -8,9 +8,9 @@ altitute_target = 1.5
 hovering_time = 20
 vehicle = dronekit.connect('/dev/ttyACM0', wait_ready=True)
 # vehicle = dronekit.connect('127.0.0.1:14551', wait_ready=True)
-vehicle.mode = dronekit.VehicleMode("GUIDED")
 vehicle.armed = True
 vehicle.simple_takeoff(altitute_target)
+
 lidar = serial.Serial('/dev/serial0', baudrate=115200, timeout=0)
 
 def read_lidar_data():
@@ -53,11 +53,9 @@ while True:
             strength = bytes_serial[4] + bytes_serial[5]*256 # signal strength in next two bytes
             temperature = bytes_serial[6] + bytes_serial[7]*256 # temp in next two bytes
             temperature = (temperature/8.0) - 256.0 
-            print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
+    print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
                 format(distance,strength,temperature))
     print("Roll: %f, Pitch: %f, Yaw: %f, Alt: %f" % (attitude.roll, attitude.pitch, attitude.yaw, vehicle.location.global_relative_frame.alt))
-    print("Global Relative")
-    print(vehicle.location.global_relative_frame)
     if vehicle.location.global_relative_frame.alt >= 1.2*0.95:
         print("Reached altitude")
         break
@@ -65,32 +63,27 @@ while True:
 
 time.sleep(hovering_time)
 
-initial_pos = [[vehicle.location.global_relative_frame.lat],
-               [vehicle.location.global_relative_frame.lon],
-               [vehicle.location.global_relative_frame.alt]]
+initial_pos = vehicle.location.global_relative_frame
 
-# while True:
-#     current_pos = [[vehicle.location.global_relative_frame.lat],
-#                    [vehicle.location.global_relative_frame.lon],
-#                    [vehicle.location.global_relative_frame.alt]]
-#     # Use the Kalman filter to estimate the drone's position
-#     state_mean, state_cov = kf.filter_update(filtered_state_mean=initial_pos.reshape,
-#                                             filtered_state_covariance=kf.initial_state_covariance,
-#                                             observation=current_pos)
-#     # Update the initial position for the next iteration
-#     initial_pos = state_mean
-#     # Use the estimated position to control the drone's movement
-#     vehicle.simple_goto(state_mean)
-#     # Check if the drone has reached its destination
-#     if vehicle.location.global_relative_frame.alt >= 5:
-#         break
+while True:
+    current_pos = vehicle.location.global_relative_frame
+    # Use the Kalman filter to estimate the drone's position
+    state_mean, state_cov = kf.filter_update(filtered_state_mean=initial_pos,
+                                            filtered_state_covariance=kf.initial_state_covariance,
+                                            observation=current_pos)
+    # Update the initial position for the next iteration
+    initial_pos = state_mean
+    # Use the estimated position to control the drone's movement
+    vehicle.simple_goto(state_mean)
+    # Check if the drone has reached its destination
+    if vehicle.location.global_relative_frame.alt >= 5:
+        break
 
 # Set the target altitude for the landing
 landing_alt = 0.2
 # Set the descent rate for the landing
 descent_rate = 0.5
 target_location = vehicle.LocationGlobalRelative(vehicle.location.lat, vehicle.location.lon, landing_alt)
-time.sleep(3)
 # Begin the landing
 vehicle.mode = dronekit.VehicleMode("LAND")
 
