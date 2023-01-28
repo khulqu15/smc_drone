@@ -51,7 +51,6 @@ while True:
     attitude = vehicle.attitude
     counter = lidar.in_waiting
     distance = read_lidar_data() # read values
-    print('Distance: %f m' % (distance)) # print sample data
     print("Roll: %f, Pitch: %f, Yaw: %f, Alt: %f" % (attitude.roll, attitude.pitch, attitude.yaw, vehicle.location.global_relative_frame.alt))
     print("Global Relative")
     print(vehicle.location.global_relative_frame)
