@@ -43,7 +43,7 @@ def sliding_mode_control(vehicle, desired_altitude):
     else:
         vehicle.channels.overrides = {'3': 1400}
 
-if lidar.isOpen() == False:
+if lidar.is_open == False:
     lidar.open()
   
 while True:
