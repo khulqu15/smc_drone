@@ -15,10 +15,10 @@ lidar = serial.Serial('/dev/serial0', baudrate=115200, timeout=0)
 
 def read_lidar_data():
     while True:
-        counter = lidar.in_waiting # count the number of bytes of the serial port
+        counter = .in_waiting # count the number of bytes of the serial port
         if counter > 8:
-            bytes_serial = lidar.read(9) # read 9 bytes
-            lidar.reset_input_buffer() # reset buffer
+            bytes_serial = ser.read(9) # read 9 bytes
+            ser.reset_input_buffer() # reset buffer
 
             if bytes_serial[0] == 0x59 and bytes_serial[1] == 0x59: # check first two bytes
                 distance = bytes_serial[2] + bytes_serial[3]*256 # distance in next two bytes
@@ -50,9 +50,9 @@ while True:
     sliding_mode_control(vehicle, altitute_target)
     attitude = vehicle.attitude
     counter = lidar.in_waiting
-    distance = read_lidar_data() # read values
-    print('Distance: {0:2.2f} m'.\
-                format(distance)) # print sample data
+    distance,strength,temperature = read_lidar_data() # read values
+    print('Distance: {0:2.2f} m, Strength: {1:2.0f} / 65535 (16-bit), Chip Temperature: {2:2.1f} C'.\
+                format(distance,strength,temperature)) # print sample data
 
     print("Roll: %f, Pitch: %f, Yaw: %f, Alt: %f" % (attitude.roll, attitude.pitch, attitude.yaw, vehicle.location.global_relative_frame.alt))
     print("Global Relative")

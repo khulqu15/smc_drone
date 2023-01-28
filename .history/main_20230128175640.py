@@ -50,9 +50,9 @@ while True:
     sliding_mode_control(vehicle, altitute_target)
     attitude = vehicle.attitude
     counter = lidar.in_waiting
-    distance = read_lidar_data() # read values
+    temperature = read_lidar_data() # read values
     print('Distance: {0:2.2f} m'.\
-                format(distance)) # print sample data
+                format(distance,strength,temperature)) # print sample data
 
     print("Roll: %f, Pitch: %f, Yaw: %f, Alt: %f" % (attitude.roll, attitude.pitch, attitude.yaw, vehicle.location.global_relative_frame.alt))
     print("Global Relative")
