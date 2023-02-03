@@ -1,0 +1,57 @@
+import dronekit
+import time
+import math
+
+def sliding_control_mode():
+    # Connect to the drone
+    vehicle = dronekit.connect("/dev/serial0", baud=57600, wait_ready=True)
+
+    # Arm the drone
+    vehicle.armed = True
+
+    # Takeoff to a target altitude
+    target_altitude = 10 # meters
+    vehicle.simple_takeoff(target_altitude)
+
+    # Wait until the drone has reached the target altitude
+    while vehicle.location.global_relative_frame.alt < target_altitude:
+        time.sleep(0.1)
+
+    # Define the sliding surface and control gains
+    sliding_surface = [0, 0, 1, 0, 0, 0]
+    kp = [1, 1, 1, 1, 1, 1]
+    kd = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
+
+    # Start the control loop
+    while True:
+        # Get the current state of the drone
+        position = vehicle.location.global_relative_frame
+        velocity = vehicle.velocity
+        attitude = vehicle.attitude
+
+        # Calculate the error between the current state and the desired state
+        error = [position.x - target_position.x,
+                 position.y - target_position.y,
+                 position.z - target_altitude,
+                 attitude.roll,
+                 attitude.pitch,
+                 attitude.yaw]
+
+        # Calculate the control inputs using the sliding control algorithm
+        u = -kp * error - kd * velocity
+        u = [math.clip(val, -1, 1) for val in u]
+
+        # Send the control inputs to the drone
+        vehicle.send_mavlink(u)
+
+        # Sleep for a short time to control the loop frequency
+        time.sleep(0.01)
+
+    # Land the drone
+    vehicle.mode = dronekit.VehicleMode("LAND")
+
+    # Close the connection to the drone
+    vehicle.close()
+
+# Call the function to implement the sliding control mode
+sliding_control_mode()
