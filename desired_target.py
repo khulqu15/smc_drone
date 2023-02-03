@@ -8,6 +8,7 @@ import pickle
 
 matplotlib.use('Agg')
 
+
 # Connect to vehicle
 copter = dronekit.connect("/dev/ttyACM0", baud=57600, wait_ready=True)
 # copter = dronekit.connect("127.0.0.1:14551", baud=57600, wait_ready=True)
@@ -127,7 +128,7 @@ copter.mode = dronekit.VehicleMode("ACRO")
 
 # Implement the sliding control mode
 # lat=-35.363262,lon=149.1652374,alt=1.577
-target_location = dronekit.LocationGlobalRelative(-40.364, 150.1653, 1.2)
+target_location = dronekit.LocationGlobalRelative(-7.276541, 112.793828)
 kp = 0.1
 ki = 0.01
 kd = 0.05
