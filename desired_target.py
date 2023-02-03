@@ -9,8 +9,8 @@ import pickle
 matplotlib.use('Agg')
 
 # Connect to vehicle
-# copter = dronekit.connect("/dev/ttyACM0", baud=57600, wait_ready=True)
-copter = dronekit.connect("127.0.0.1:14551", baud=57600, wait_ready=True)
+copter = dronekit.connect("/dev/ttyACM0", baud=57600, wait_ready=True)
+# copter = dronekit.connect("127.0.0.1:14551", baud=57600, wait_ready=True)
 
 latitude_data = []
 longitude_data = []
