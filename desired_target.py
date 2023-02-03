@@ -15,26 +15,26 @@ copter = dronekit.connect("127.0.0.1:14551", baud=57600, wait_ready=True)
 latitude_data = []
 longitude_data = []
 altitude_data = []
-# lidar = serial.Serial("/dev/serial0")
+lidar = serial.Serial("/dev/serial0")
 
-# if lidar.isOpen() == False:
-#     lidar.open()
+if lidar.isOpen() == False:
+    lidar.open()
 
-# def read_lidar_data(type="distance"):
-#     # while True:
-#     counter = lidar.in_waiting # count the number of bytes of the serial port
-#     if counter > 8:
-#         bytes_serial = lidar.read(9) # read 9 bytes
-#         lidar.reset_input_buffer() # reset buffer
+def read_lidar_data(type="distance"):
+    # while True:
+    counter = lidar.in_waiting # count the number of bytes of the serial port
+    if counter > 8:
+        bytes_serial = lidar.read(9) # read 9 bytes
+        lidar.reset_input_buffer() # reset buffer
 
-#         if bytes_serial[0] == 0x59 and bytes_serial[1] == 0x59: # check first two bytes
-#             distance = bytes_serial[2] + bytes_serial[3]*256 # distance in next two bytes
-#             strength = bytes_serial[4] + bytes_serial[5]*256 # signal strength in next two bytes
-#             temperature = bytes_serial[6] + bytes_serial[7]*256 # temp in next two bytes
-#             temperature = (temperature/8.0) - 256.0 # temp scaling and offset
-#             if type == "distance": return distance/100.0
-#             if type == "strength": return strength
-#             if type == "temperature": return temperature
+        if bytes_serial[0] == 0x59 and bytes_serial[1] == 0x59: # check first two bytes
+            distance = bytes_serial[2] + bytes_serial[3]*256 # distance in next two bytes
+            strength = bytes_serial[4] + bytes_serial[5]*256 # signal strength in next two bytes
+            temperature = bytes_serial[6] + bytes_serial[7]*256 # temp in next two bytes
+            temperature = (temperature/8.0) - 256.0 # temp scaling and offset
+            if type == "distance": return distance/100.0
+            if type == "strength": return strength
+            if type == "temperature": return temperature
 
 def arm_and_takeoff(altitude):
   """Arms vehicle and fly to a target altitude
@@ -58,8 +58,8 @@ def arm_and_takeoff(altitude):
   # (otherwise the command after Vehicle.simple_takeoff will execute immediately).
   while True:
     print("Altitude: ", copter.location.global_relative_frame.alt)
-    # distance = read_lidar_data()
-    # print("Data lidar (distance): ", distance)
+    distance = read_lidar_data()
+    print("Data lidar (distance): ", distance)
     print("Location: ", copter.location.global_relative_frame)
     pos = copter.location.global_relative_frame
     latitude_data.append(pos.lat)
