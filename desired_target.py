@@ -8,7 +8,6 @@ import pickle
 
 matplotlib.use('Agg')
 
-
 # Connect to vehicle
 copter = dronekit.connect("/dev/ttyACM0", baud=57600, wait_ready=True)
 # copter = dronekit.connect("127.0.0.1:14551", baud=57600, wait_ready=True)
@@ -121,20 +120,20 @@ def landing():
 
 
 # Take off
-altitude = 1.5
+altitude = 0.8
 arm_and_takeoff(altitude)
 
 copter.mode = dronekit.VehicleMode("ACRO")
 
 # Implement the sliding control mode
 # lat=-35.363262,lon=149.1652374,alt=1.577
-target_location = dronekit.LocationGlobalRelative(-7.276541, 112.793828)
+target_location = dronekit.LocationGlobalRelative(-40.364, 150.1653, 0.8)
 kp = 0.1
 ki = 0.01
 kd = 0.05
 
 control_frequency = 10 # Hz
-control_duration = 20 # Second
+control_duration = 15 # Second
 
 start_time = time.time()
 wind_disturbance = 0
@@ -152,8 +151,8 @@ while True:
   throttle_value = int(1500 + altitude_error * 100)
   
   copter.channels.overrides = {
-    "1": sliding_control_signal[0],
-    "2": sliding_control_signal[1],
+    "1": int(sliding_control_signal[0]),
+    "2": int(sliding_control_signal[1]),
     "3": throttle_value
   }
   
