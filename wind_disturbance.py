@@ -78,6 +78,7 @@ groundspeed = 5
 latitude_data = []
 longitude_data = []
 altitude_data = []
+vehicle.location.time
 wind_velocity_x = 0
 wind_velocity_y = 0
 # -35.363016, 149.165204
@@ -128,4 +129,5 @@ ax.plot(latitude_data, longitude_data, altitude_data)
 plt.show()
 plt.savefig("3d_plot.png", format="png")
 
+# PENS (Polite)
 # -7.276541, 112.793828
