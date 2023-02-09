@@ -1,0 +1,94 @@
+% Define the state space model for the drone
+A = [0 1 0 0; 0 0 9.8 0; 0 0 0 1; 0 0 0 0];
+B = [0; 1; 0; 1];
+C = [1 0 0 0; 0 0 1 0];
+
+% Define the initial state of the drone
+x0 = [0; 0; 0; 0];
+
+% Define the control input
+u = zeros(1,N);
+
+% Define the measurement noise covariance
+R = [0.01 0; 0 0.01];
+
+% Define the process noise covariance
+Q = [0.1 0 0 0; 0 0.1 0 0; 0 0 0.1 0; 0 0 0 0.1];
+
+% Define the simulation time steps
+dt = 0.01;
+t_start = 0;
+t_final = 10;
+t = t_start:dt:t_final;
+
+% Initialize the state and covariance matrices
+x_hat = x0;
+P = eye(4);
+
+% Initialize the arrays to store the results
+x_hat_history = zeros(4, length(t));
+y_history = zeros(2, length(t));
+
+% Initialize states and inputs arrays
+x_sim = zeros(length(t), 4);
+u_sim = zeros(length(t), 1);
+
+% Set initial conditions
+x_sim(1,:) = x0;
+u_sim(1) = u;
+
+% Kalman filter loop
+for i = 1:(length(t) - 1)
+    % Simulate the drone
+    [t_sim, x_sim] = ode45(@(t, x) drone_dynamics(x, u), [t(i), t(i+1)], x0);
+    x0 = x_sim(end,:)';
+    y = C * x0 + sqrt(R) * randn(2,1);
+    y_history(:,i) = y;
+    
+    % Predict the step
+    x_hat = A * x_hat + B * u;
+    P = A * P * A' + Q;
+    
+    % Update the step
+    K = P * C' / (C * P * C' + R);
+    x_hat = x_hat + K * (y - C * x_hat);
+    P = (eye(4) - K * C) * P;
+    
+    % Store the result
+    x_hat_history(:,i) = x_hat;
+    
+    % Sliding mode control
+    e = x0(1:2) - x_hat(1:2);
+    u = -K(1:2,:) * e - 0.1 * sign(e);
+end
+
+% Plot the results
+figure;
+subplot(2,2,1);
+plot(t, x_hat_history(1,:), 'r', t, y_history(1,:), 'b');
+legend('Estimated position', 'Measurement position');
+xlabel('Time (s)');
+ylabel('X position (m)');
+
+sublot(2,2,2);
+plot(t, x_hat_history(2,:), 'r', t, y_history(2,:), 'b');
+legend('Estimated velocity', 'Measured velocity');
+xlabel('Time (s)');
+ylabel('X velocity (m/s');
+
+subplot(2,2,3);
+plot(t, x_hat_history(3,:));
+legend('Estimated velocity');
+xlabel('Time (s)');
+ylabel('Y velocity (m/s)');
+
+subplot(2,2,4);
+plot(t, x_hat_history(4,:));
+legend('Estimated acceleration');
+xlabel('Time (s)');
+ylabel('X acceleration (m/s^2)');
+
+% Drone dynamics method
+function x_dot = drone_dynamics(t, x, u)
+    x_dot = [x(2); 9.8 + u; x(4); u];
+end
