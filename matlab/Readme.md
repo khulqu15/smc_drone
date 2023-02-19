@@ -1,3 +1,5 @@
+![SMC](https://github.com/khulqu15/smc_drone/blob/master/matlab/image/drone.jpg?raw=true)
+
 # SMC VS SMC-KF
 Perbedaan respon antara sliding mode control (SMC) dan sliding mode control dengan filter Kalman (SMC-KF) dapat diamati pada estimasi posisi dan kecepatan.
 
