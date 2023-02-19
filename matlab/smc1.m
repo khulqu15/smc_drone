@@ -1,67 +1,119 @@
-% Define the state transition matrix
-A = [1 dt; 0 1];
+% Constants
+g = 9.81;           % Acceleration due to gravity (m/s^2)
+dt = 0.1;           % Sampling time (s)
 
-% Define the control input matrix
-B = [dt^2/2; dt];
+% System matrices
+A = [1 dt; 0 1];    % State transition matrix
+B = [dt^2/2; dt];   % Input matrix
+C = [1 0; 0 1];     % Output matrix
+D = [0; 0];         % Feedthrough matrix
 
-% Define the measurement matrix
-C = [1 0];
+% Process noise covariance
+Q = [0.1 0; 0 0.1];
 
-% Define the initial state
-x = [0; 0];
+% Measurement noise covariance
+R = [1 0; 0 1];
 
-% Define the desired position and velocity
-des_pos = 5;
-des_vel = 0;
+% Initial state and covariance
+x = [0; 0];      % Initial state estimate
 
-% Define the control input
-u = 0;
+% Sliding mode controller gains
+k1 = 1;
+k2 = 1;
 
-% Define the sampling time
-dt = 0.1;
+% Time vector
+t = 0:dt:10;
 
-% Define the number of steps
-N = 100;
+% Input signal
+u = 5*ones(size(t));    % Step input
 
-% Pre-allocate memory for the arrays
-x_array = zeros(2,N);
-y_array = zeros(1,N);
+% True state vector
+x_true = [0; 0];
 
-% Main loop
-for i = 1:N
-    % Generate the process noise
-    w = sqrt(Q) * randn(2,1);
+% State and measurement history
+x_history = zeros(2,length(t));
+z_history = zeros(2,length(t));
+pitch_history = zeros(1,length(t));
+roll_history = zeros(1,length(t));
+yaw_history = zeros(1,length(t));
+inertia_history = zeros(3,length(t));
+
+% Simulate the system
+for i = 1:length(t)
+    % Calculate the net force on the drone
+    net_force = u(i) - m*g - k*x(1) - b*x(2) + F;
     
-    % Generate the measurement noise
-    v = sqrt(R) * randn(1,1);
+    % Update the position and velocity
+    x = x + dt*[x(2); net_force/m];
     
-    % Simulate the process
-    x = A * x + B * u + w;
+    % Update the control input and external force
+    if t(i) > 2
+        u(i) = 5;
+    end
+    if t(i) > 4
+        F = 2;
+    end
     
-    % Simulate the measurement
-    y = C * x + v;
+    % Save state and measurement history
+    x_history(:,i) = x;
+    z_history(:,i) = [x(1); x(2)];
+    pitch_history(i) = 0;       % Placeholder for pitch data
+    roll_history(i) = 0;        % Placeholder for roll data
+    yaw_history(i) = 0;         % Placeholder for yaw data
+    inertia_history(:,i) = [1; 1; 1];    % Placeholder for inertia data
+end
+
+% Sliding mode control loop
+for i = 1:length(t)
+    % Control input
+    r = [cos(t(i)); sin(t(i))];     % Reference trajectory
+    e = x - r;                      % Tracking error
+    v = -k1*sign(e(1)) - k2*sign(e(2));
     
-    % Compute the control input using sliding mode control
-    e_pos = des_pos - x(1);
-    e_vel = des_vel - x(2);
-    u = u + sign(e_pos) * dt;
+    % Apply control input to the system
+    net_force = v - m*g - k*x(1) - b*x(2) + F;
+    x = x + dt*[x(2); net_force/m];
     
-    % Save the results
-    x_array(:,i) = x;
-    y_array(i) = y;
+    % Save state and measurement history
+    x_history(:,i) = x;
+    z_history(:,i) = [x(1); x(2)];
+    pitch_history(i) = 0;       % Placeholder for pitch data
+    roll_history(i) = 0;        % Placeholder for roll data
+    yaw_history(i) = 0;         % Placeholder for yaw data
+    inertia_history(:,i) = [1; 1; 1];    % Placeholder for inertia data
 end
 
 % Plot the results
 figure;
-subplot(2,1,1);
-plot(x_array(1,:), 'LineWidth', 2);
-hold on;
-plot(y_array, 'LineWidth', 2);
-legend('Estimated position', 'Measured position');
-xlabel('Time step');
-ylabel('Position');
+subplot(3,2,1);
+plot(t,x_history(1,:),t,z_history(1,:));
+xlabel('Time (s)');
+ylabel('Position (m)');
+legend('True Position','Measured Position');
 
-subplot(2,1,2);
-plot(x_array(2,:), 'LineWidth', 2);
-xlabel('Time step');
-ylabel('Velocity');
+subplot(3,2,2);
+plot(t,x_history(2,:),t,xhat(2)*ones(size(t)));
+xlabel('Time (s)');
+ylabel('Velocity (m/s)');
+legend('True Velocity','Estimated Velocity');
+
+subplot(3,2,3);
+plot(t,pitch_history);
+xlabel('Time (s)');
+ylabel('Pitch Angle (rad)');
+
+subplot(3,2,4);
+plot(t,roll_history);
+xlabel('Time (s)');
+ylabel('Roll Angle (rad)');
+
+subplot(3,2,5);
+plot(t,yaw_history);
+xlabel('Time (s)');
+ylabel('Yaw Angle (rad)');
+
+subplot(3,2,6);
+plot(t,inertia_history(1,:),t,inertia_history(2,:),t,inertia_history(3,:));
+xlabel('Time (s)');
+ylabel('Inertia');
+legend('X-axis','Y-axis','Z-axis');

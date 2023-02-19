@@ -1,85 +1,87 @@
-% Define the state transition matrix
-A = [1 dt; 0 1];
+% Constants
+g = 9.81;           % Acceleration due to gravity (m/s^2)
+dt = 0.1;           % Sampling time (s)
 
-% Define the control input matrix
-B = [dt^2/2; dt];
+% System matrices
+A = [1 dt; 0 1];    % State transition matrix
+B = [dt^2/2; dt];   % Input matrix
+C = [1 0; 0 1];     % Output matrix
+D = [0; 0];         % Feedthrough matrix
 
-% Define the measurement matrix
-C = [1 0];
-
-% Define the initial state
-x_hat = [0; 0];
-
-% Define the initial state covariance
-P = [1000 0; 0 1000];
-
-% Define the process noise covariance
+% Process noise covariance
 Q = [0.1 0; 0 0.1];
 
-% Define the measurement noise covariance
-R = 1;
+% Measurement noise covariance
+R = [1 0; 0 1];
 
-% Define the desired position and velocity
-des_pos = 5;
-des_vel = 0;
+% Initial state and covariance
+xhat = [0; 0];      % Initial state estimate
+P = [1 0; 0 1];     % Initial covariance estimate
 
-% Define the control input
-u = 0;
+% Sliding mode controller gains
+k1 = 1;
+k2 = 1;
 
-% Define the sampling time
-dt = 0.1;
+% Time vector
+t = 0:dt:10;
 
-% Define the number of steps
-N = 100;
+% Input signal
+u = 5*ones(size(t));    % Step input
 
-% Pre-allocate memory for the arrays
-x_hat_array = zeros(2,N);
-y_array = zeros(1,N);
+% True state vector
+x_true = [0; 0];
 
-% Main loop
-for i = 1:N
-    % Generate the process noise
-    w = sqrt(Q) * randn(2,1);
+% State and measurement history
+x_history = zeros(2,length(t));
+z_history = zeros(2,length(t));
+
+% Kalman filter loop
+for i = 1:length(t)
+    % True state update
+    x_true = A*x_true + B*u(i) + [0; -g*dt^2/2];
     
-    % Generate the measurement noise
-    v = sqrt(R) * randn(1,1);
-    
-    % Simulate the process
-    x = A * x_hat + B * u + w;
-    
-    % Simulate the measurement
-    y = C * x + v;
-    
-    % Compute the control input using sliding mode control
-    e_pos = des_pos - x_hat(1);
-    e_vel = des_vel - x_hat(2);
-    u = u + sign(e_pos) * dt;
+    % Measurement update
+    z = C*x_true + sqrt(R)*randn(2,1);
     
     % Kalman filter prediction step
-    x_hat = A * x_hat + B * u;
-    P = A * P * A' + Q;
+    xhat_minus = A*xhat + B*u(i);
+    P_minus = A*P*A' + Q;
     
     % Kalman filter correction step
-    K = P * C' / (C * P * C' + R);
-    x_hat = x_hat + K * (y - C * x_hat);
-    P = (eye(2) - K * C) * P;
+    K = P_minus*C'/(C*P_minus*C' + R);
+    xhat = xhat_minus + K*(z - C*xhat_minus);
+    P = (eye(2) - K*C)*P_minus;
     
-    % Save the results
-    x_hat_array(:,i) = x_hat;
-    y_array(i) = y;
+    % Save state and measurement history
+    x_history(:,i) = x_true;
+    z_history(:,i) = z;
 end
 
-% Plot the results
+% Sliding mode control loop
+for i = 1:length(t)
+    % Control input
+    r = [cos(t(i)); sin(t(i))];     % Reference trajectory
+    e = xhat - r;                   % Tracking error
+    v = -k1*sign(e(1)) - k2*sign(e(2));
+    
+    % Apply control input to the system
+    x_true = A*x_true + B*v + [0; -g*dt^2/2];
+    z = C*x_true + sqrt(R)*randn(2,1);
+    
+    % Save state and measurement history
+    x_history(:,i) = x_true;
+    z_history(:,i) = z;
+end
+
+% Plot results
 figure;
 subplot(2,1,1);
-plot(x_hat_array(1,:), 'LineWidth', 2);
-hold on;
-plot(y_array, 'LineWidth', 2);
-legend('Estimated position', 'Measured position');
-xlabel('Time step');
-ylabel('Position');
-
+plot(t, x_history(1,:), t, z_history(1,:), '--');
+xlabel('Time (s)');
+ylabel('Position (m)');
+legend('True position', 'Measured position');
 subplot(2,1,2);
-plot(x_hat_array(2,:), 'LineWidth', 2);
-xlabel('Time step');
-ylabel('Velocity');
+plot(t, x_history(2,:), t, z_history(2,:), '--');
+xlabel('Time (s)');
+ylabel('Velocity (m/s)');
+legend('True velocity', 'Measured velocity');
