@@ -1,66 +1,52 @@
-clc;
-clear;
+% Initialize variables
+dt = 0.01;                  % Time step (s)
+t = 0:dt:10;                % Time vector (s)
+N = length(t);              % Number of time steps
+m = 0.5;                    % Mass of drone (kg)
+g = 9.81;                   % Acceleration due to gravity (m/s^2)
+k = 3;                      % Spring constant (N/m)
+b = 0.5;                    % Damping coefficient (N*s/m)
 
-% Define simulation parameters
-dt = 0.01; % Time step
-tf = 10; % Final time
-t = 0:dt:tf; % Time vector
-N = length(t); % Number of time steps
+x_history = zeros(2, N);    % Position and velocity history
+u_history = zeros(1, N);    % Control input history
+F_history = zeros(1, N);    % External force history
 
-% Define initial state
-x0 = [0; 0; 0; 0]; % [position; velocity; acceleration]
+% Initial conditions
+x = [0; 0];                 % Initial position and velocity
+u = 0;                      % Initial control input
+F = 0;                      % Initial external force
 
-% Define control input
-u = zeros(1,N); % Constant control input
-
-% Initialize state and control history
-x_history = zeros(4,N);
-u_history = zeros(1,N);
-
-% Define sliding mode control parameters
-k = 0.1; % Control gain
-
-% Simulation loop
+% Simulate the system
 for i = 1:N
-    % Store current state and control input
-    x_history(:,i) = x0;
-    u_history(i) = u(i);
+    % Calculate the net force on the drone
+    net_force = u - m*g - k*x(1) - b*x(2) + F;
     
-    % Calculate sliding mode control
-    error = x_history(3,i) - 9.8;
-    u(i) = -k * sign(error);
+    % Update the position and velocity
+    x = x + dt*[x(2); net_force/m];
     
-    % Simulate drone dynamics
-    x_dot = drone_dynamics(t(i), x0, u(i));
-    x0 = x0 + x_dot * dt;
+    % Update the control input and external force
+    if t(i) > 2
+        u = 5;
+    end
+    if t(i) > 4
+        F = 2;
+    end
+    
+    % Save the data to the history arrays
+    x_history(:, i) = x;
+    u_history(i) = u;
+    F_history(i) = F;
 end
 
-% Plot results
-subplot(2,2,1);
+% Plot the results
+subplot(2,1,1);
 plot(t, x_history(1,:));
-legend('X Position (m)');
 xlabel('Time (s)');
-ylabel('X position (m)');
+ylabel('Position (m)');
+title('Drone Position');
 
-subplot(2,2,2);
+subplot(2,1,2);
 plot(t, x_history(2,:));
-legend('Velocity');
 xlabel('Time (s)');
-ylabel('X velocity (m/s)');
-
-subplot(2,2,3);
-plot(t, x_history(3,:));
-legend('Acceleration');
-xlabel('Time (s)');
-ylabel('X acceleration (m/s^2)');
-
-subplot(2,2,4);
-plot(t, u_history);
-legend('Control input');
-xlabel('Time (s)');
-ylabel('Control input (m/s^2)');
-
-% Drone dynamics function
-function x_dot = drone_dynamics(t, x, u)
-    x_dot = [x(2); 9.8 + u; x(4); u];
-end
+ylabel('Velocity (m/s)');
+title('Drone Velocity');
