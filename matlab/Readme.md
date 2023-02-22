@@ -11,10 +11,14 @@ Dalam kasus SMC, masukan kontrol dihitung hanya berdasarkan kesalahan antara pos
 
 ![SMC](https://github.com/khulqu15/smc_drone/blob/master/matlab/image/smc.jpg?raw=true)
 
+![SMC](https://github.com/khulqu15/smc_drone/blob/master/matlab/image/smcplot.jpg?raw=true)
+
 ## SMC-KF
 
 Dalam kasus SMC-KF, filter Kalman digunakan untuk memperkirakan keadaan sistem dengan menggabungkan pengukuran derau dengan model dinamis sistem. Hal ini menghasilkan estimasi posisi dan kecepatan yang lebih akurat, karena kebisingan pengukuran disaring oleh filter Kalman.
 
 ![SMCKF](https://github.com/khulqu15/smc_drone/blob/master/matlab/image/smckf.jpg?raw=true)
+
+![SMCKF](https://github.com/khulqu15/smc_drone/blob/master/matlab/image/smckfplot.jpg?raw=true)
 
 Perbedaan respon dapat dilihat dengan membandingkan plot estimasi posisi dan kecepatan untuk algoritma SMC dan SMC-KF. Algoritma SMC-KF akan menghasilkan perkiraan posisi dan kecepatan yang lebih halus dan lebih akurat, dibandingkan dengan algoritma SMC, yang mungkin menunjukkan lebih banyak fluktuasi dan kesalahan karena kebisingan pengukuran.
