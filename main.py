@@ -19,7 +19,7 @@ trajectory_distance = int(input("Trajectory Distance (m): ") or 2)
 trajectory_duration = int(input("Trajectory Duration Fly (s): ") or 10)
 
 is_plotting = input("Plotting Diagram ? [Y/N] : ") or "Y"
-is_scanning = input("Scanning distance altitude with Lidar ? [Y/N]") or "Y"
+is_scanning = input("Scanning distance altitude with Lidar ? [Y/N] : ") or "Y"
 
 if is_plotting.lower() == 'y': plotting = True
 else: plotting = False
@@ -27,7 +27,20 @@ else: plotting = False
 if is_scanning.lower() == 'y': scanning = True
 else: scanning = True
 
-vehicle = dronekit.connect(connections[int(option)], wait_ready=True, timeout=60)
+try: 
+    vehicle = dronekit.connect(connections[int(option)], wait_ready=True, timeout=60)
+except Exception as e:
+    print("Failed to connect vehicle option : ", str(e))
+    print("Trying to connect using ttyACM0...")
+    if option == 0: other_option = 1
+    else: other_option = 0
+    
+    try:
+        vehicle = dronekit.connect(connections[int(other_option)], wait_ready=True, timeout=60)
+        print("Connection successful!")
+    except Exception as e:
+        print("Connection failed: " + str(e))
+        exit(1)
 
 if method == 0:
     smc.arm_takeoff(vehicle, takeoff_alt, scanning, plotting)
