@@ -4,10 +4,10 @@ import smc
 
 print("[0] Simulation")
 print("[1] Testing")
-option = input("Choose one: ")
+option = int(input("Choose one: "))
 print("[0] Sliding Mode Control")
 print("[1] Kalman Filter & Sliding Mode Control")
-method = input("Choose one: ")
+method = int(input("Choose one: "))
 connections = [
     "udp:127.0.0.1:14551",
     "/dev/ttyACM0"

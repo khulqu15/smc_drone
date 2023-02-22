@@ -135,8 +135,8 @@ def trajectory(vehicle, altitude, distance, duration, scanning, plotting):
         throttle_value = int(1500 + altitude_error * 35)
         
         vehicle.channels.overrides = {
-            '1': int(1500 + (u_control[0,0] * 100)), 
-            '2': int(1500 + (u_control[1,0] * 100)), 
+            '1': int(1500 + (u_control[0,0] * 20)), 
+            '2': int(1500 + (u_control[1,0] * 20)), 
             '3': throttle_value, 
             '4': 1500
         }
@@ -201,8 +201,8 @@ def landing_disarm(vehicle, scanning, plotting):
         throttle_value = int(1500 + altitude_error * 35)
         
         vehicle.channels.overrides = {
-            '1': int(1500 + (u_control[0,0] * 100)), 
-            '2': int(1500 + (u_control[1,0] * 100)), 
+            '1': int(1500 + u_control[0,0]), 
+            '2': int(1500 + u_control[1,0]), 
             '3': throttle_value, 
             '4': 1500
         }
