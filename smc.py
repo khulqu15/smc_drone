@@ -27,14 +27,13 @@ def arm_takeoff(vehicle, altitude, scanning, plotting):
         print("Waiting for arming...")
         time.sleep(1)
     
-    state = np.array([[vehicle.location.global_relative_frame.lat], [vehicle.location.global_relative_frame.lon]])
-    ref = np.array([[vehicle.home_location.lat], [vehicle.home_location.lon]])
-    Ks = np.array([[1.0, 0.0], [0.0, 1.0]])
+    ref = np.array([[vehicle.home_location.lat], [vehicle.home_location.lon], [altitude]])
+    Ks = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 0.1]])
 
     print("Take off!")
     while True:
-         # Get the current state of the vehicle
-        state = np.array([[vehicle.location.global_relative_frame.lat], [vehicle.location.global_relative_frame.lon]])
+        # Get the current state of the vehicle
+        state = np.array([[vehicle.location.global_relative_frame.lat], [vehicle.location.global_relative_frame.lon], [altitude]])
 
         # Run the Sliding Mode Control to generate control inputs
         u_control = sliding_mode_control(state, ref, Ks)
@@ -55,7 +54,8 @@ def arm_takeoff(vehicle, altitude, scanning, plotting):
         vehicle.channels.overrides = {
             '1': int(1500 + u_control[0,0]),
             '2': int(1500 + u_control[1,0]),
-            '3': throttle_value,
+            '3': int(1500 + u_control[2,0]),
+            # '3': throttle_value,
             '4': 1500
         }
         
@@ -68,18 +68,22 @@ def arm_takeoff(vehicle, altitude, scanning, plotting):
         
         time.sleep(0.1)
 
-def trajectory(vehicle, altitude, distance, duration, scanning, plotting):
+def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting):
     print("Trajectory")
     t = 0
-    Ks = np.array([[1.0, 0.0], [0.0, 1.0]])
+    Ks = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 0.1]])
     start_time = time.time()
     vehicle.mode = dronekit.VehicleMode("ACRO")
+    
+    # Compute the desired position on the circle
+    ref = np.array([distance * np.cos(t), distance * np.sin(t), altitude]).reshape(3,1) + np.array([[vehicle.home_location.lat], [vehicle.home_location.lon], [0]])
     while True:
-        # Compute the desired position on the circle
-        ref = np.array([distance * np.cos(t), distance * np.sin(t)]).reshape(2,1) + np.array([[vehicle.home_location.lat], [vehicle.home_location.lon]])
-
         # Get the current state of the vehicle
-        state = np.array([[vehicle.location.global_relative_frame.lat], [vehicle.location.global_relative_frame.lon]])
+        state = np.array([
+            [vehicle.location.global_relative_frame.lat], 
+            [vehicle.location.global_relative_frame.lon],
+            [vehicle.location.global_relative_frame.alt]
+        ])
 
         # Run the Sliding Mode Control to generate control inputs
         u_control = sliding_mode_control(state, ref, Ks)
@@ -90,9 +94,10 @@ def trajectory(vehicle, altitude, distance, duration, scanning, plotting):
         
         # Set the control channel override values
         vehicle.channels.overrides = {
-            '1': int(1500 + (u_control[0,0] * 5)), 
-            '2': int(1500 + (u_control[1,0] * 5)), 
-            '3': throttle_value,
+            '1': int(1500 + (u_control[0,0] * speed)), 
+            '2': int(1500 + (u_control[1,0] * speed)), 
+            '3': int(1500 + u_control[2,0]), 
+            # '3': throttle_value,
             '4': 1500
         }
         vehicle.flush()
@@ -118,29 +123,32 @@ def trajectory(vehicle, altitude, distance, duration, scanning, plotting):
         
         # Sleep for a short period of time
         time.sleep(0.1)
-        
-        
+              
 def landing_disarm(vehicle, scanning, plotting):
     print("Landing")
-    Ks = np.array([[1.0, 0.0], [0.0, 1.0]])
+    Ks = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
     u_alt = 0.1
+    # Compute the reference position for landing
+    ref = np.array([[vehicle.home_location.lat], [vehicle.home_location.lon], [0]])
+
     while True:
-        # Get the current state of the vehicle
-        state = np.array([[vehicle.location.global_relative_frame.lat], [vehicle.location.global_relative_frame.lon]])
-
-        # Compute the reference position for landing
-        ref = np.array([[vehicle.home_location.lat], [vehicle.home_location.lon]])
-
+        state = np.array([
+            [vehicle.location.global_relative_frame.lat], 
+            [vehicle.location.global_relative_frame.lon],
+            [vehicle.location.global_relative_frame.alt]
+        ])
+        
         # Run the Sliding Mode Control to generate control inputs
         u_control = sliding_mode_control(state, ref, Ks)
 
         current_altitude = vehicle.location.global_relative_frame.alt
         altitude_error = u_alt - current_altitude
-        throttle_value = int(1500 + altitude_error * 35)
+        throttle_value = int(1500 + altitude_error * 20)
         
         vehicle.channels.overrides = {
             '1': int(1500 + u_control[0,0]), 
             '2': int(1500 + u_control[1,0]), 
+            # '3': int(1500 + u_control[2,0]), 
             '3': throttle_value, 
             '4': 1500
         }
@@ -150,7 +158,7 @@ def landing_disarm(vehicle, scanning, plotting):
         print("Landing Data : ")
         print('Latitude: %s, Longitude: %s' % (state[0,0], state[1,0]))
         # print('Velocity in x-axis: %s, Velocity in y-axis: %s' % (state[2,0], state[3,0]))
-        print([u_control[0,0], u_control[1,0]])
+        print([u_control[0,0], u_control[1,0], u_control[2,0]])
         if scanning: print("Lidar Sensor Distance (m)", vehicle.location.global_relative_frame.alt)
         if plotting: plot.save(vehicle.location.global_relative_frame)
         print(vehicle.location.global_relative_frame)

@@ -17,6 +17,7 @@ takeoff_alt = int(input("Takeoff Altitude (m): ") or 1)
 trajectory_alt = int(input("Trajectory Altitude (m): ") or 1.5)
 trajectory_distance = int(input("Trajectory Distance (m): ") or 2)
 trajectory_duration = int(input("Trajectory Duration Fly (s): ") or 10)
+override_speed = int(input("Override Speed (s): ") or 10)
 
 is_plotting = input("Plotting Diagram ? [Y/N] : ") or "Y"
 is_scanning = input("Scanning distance altitude with Lidar ? [Y/N] : ") or "Y"
@@ -44,11 +45,11 @@ except Exception as e:
 
 if method == 0:
     smc.arm_takeoff(vehicle, takeoff_alt, scanning, plotting)
-    smc.trajectory(vehicle, trajectory_alt, trajectory_distance, trajectory_duration, scanning, plotting)
+    smc.trajectory(vehicle, trajectory_alt, trajectory_distance, trajectory_duration, override_speed, scanning, plotting)
     smc.landing_disarm(vehicle, scanning, plotting)
 else :
     smckf.arm_takeoff(vehicle, takeoff_alt, scanning, plotting)
-    smckf.trajectory(vehicle, trajectory_alt, trajectory_distance, trajectory_duration, scanning, plotting)
+    smckf.trajectory(vehicle, trajectory_alt, trajectory_distance, trajectory_duration, override_speed, scanning, plotting)
     smckf.landing_disarm(vehicle, scanning, plotting)
 
 vehicle.close()

@@ -97,7 +97,7 @@ def arm_takeoff(vehicle, altitude, scanning, plotting):
         
         time.sleep(0.1)
 
-def trajectory(vehicle, altitude, distance, duration, scanning, plotting):
+def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting):
     global home_location
     global distance_trajectory
     distance_trajectory = distance
@@ -135,8 +135,8 @@ def trajectory(vehicle, altitude, distance, duration, scanning, plotting):
         throttle_value = int(1500 + altitude_error * 35)
         
         vehicle.channels.overrides = {
-            '1': int(1500 + (u_control[0,0] * 20)), 
-            '2': int(1500 + (u_control[1,0] * 20)), 
+            '1': int(1500 + (u_control[0,0] * speed)), 
+            '2': int(1500 + (u_control[1,0] * speed)), 
             '3': throttle_value, 
             '4': 1500
         }
