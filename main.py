@@ -13,6 +13,11 @@ connections = [
     "/dev/ttyUSB0"
 ]
 
+baudrates = [
+    57600,
+    115200,
+]
+
 takeoff_alt = float(input("Takeoff Altitude (m): ") or 1.0)
 trajectory_alt = float(input("Trajectory Altitude (m): ") or 1.5)
 trajectory_distance = float(input("Trajectory Distance (m): ") or 2.0)
@@ -29,7 +34,7 @@ if is_scanning.lower() == 'y': scanning = True
 else: scanning = True
 
 try: 
-    vehicle = dronekit.connect(connections[int(option)], wait_ready=True, timeout=60)
+    vehicle = dronekit.connect(connections[int(option)], baud=baudrates[int(option)], wait_ready=True, timeout=60)
 except Exception as e:
     print("Failed to connect vehicle option : ", str(e))
     print("Trying to connect using ttyUSB0...")
