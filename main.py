@@ -32,7 +32,7 @@ try:
     vehicle = dronekit.connect(connections[int(option)], wait_ready=True, timeout=60)
 except Exception as e:
     print("Failed to connect vehicle option : ", str(e))
-    print("Trying to connect using ttyACM0...")
+    print("Trying to connect using ttyUSB0...")
     if option == 0: other_option = 1
     else: other_option = 0
     
