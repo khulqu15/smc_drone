@@ -10,7 +10,7 @@ print("[1] Kalman Filter & Sliding Mode Control")
 method = int(input("Choose one: "))
 connections = [
     "udp:127.0.0.1:14551",
-    "/dev/ttyACM0"
+    "/dev/ttyUSB0"
 ]
 
 takeoff_alt = int(input("Takeoff Altitude (m): ") or 1)
