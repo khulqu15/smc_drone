@@ -41,9 +41,9 @@ if wait_for_ready.lower() == 'y': waiting = True
 else: waiting = False
 
 try:
-    print("Option : ", connections[option])
-    print("Baudrate : ", baudrates[baudrate])
-    print("Is Waiting : ", waiting)
+    print("Option : ", [connections[option], type(connections[option])], )
+    print("Baudrate : ", [baudrates[baudrate], type(baudrates[baudrate])])
+    print("Is Waiting : ", [waiting, type(waiting)])
     vehicle = dronekit.connect(connections[option], baud=baudrates[baudrate], wait_ready=waiting, timeout=60)
 except Exception as e:
     print("Failed to connect vehicle option : ", str(e))
