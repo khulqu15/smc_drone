@@ -40,11 +40,14 @@ else: scanning = True
 if wait_for_ready.lower() == 'y': waiting = True
 else: waiting = False
 
-try: 
-    vehicle = dronekit.connect(connections[int(option)], baud=baudrates[int(baudrate)], wait_ready=waiting, timeout=60)
+try:
+    print("Option : ", connections[option])
+    print("Baudrate : ", baudrates[baudrate])
+    print("Is Waiting : ", waiting)
+    vehicle = dronekit.connect(connections[option], baud=baudrates[baudrate], wait_ready=waiting, timeout=60)
 except Exception as e:
     print("Failed to connect vehicle option : ", str(e))
-    print("Trying to connect using ttyUSB0...")
+    print("Trying to connect other options...")
     if option == 0: other_option = 1
     else: other_option = 0
     
