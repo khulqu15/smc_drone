@@ -13,11 +13,11 @@ connections = [
     "/dev/ttyUSB0"
 ]
 
-takeoff_alt = int(input("Takeoff Altitude (m): ") or 1)
-trajectory_alt = int(input("Trajectory Altitude (m): ") or 1.5)
-trajectory_distance = int(input("Trajectory Distance (m): ") or 2)
-trajectory_duration = int(input("Trajectory Duration Fly (s): ") or 10)
-override_speed = int(input("Override Speed (s): ") or 10)
+takeoff_alt = float(input("Takeoff Altitude (m): ") or 1.0)
+trajectory_alt = float(input("Trajectory Altitude (m): ") or 1.5)
+trajectory_distance = float(input("Trajectory Distance (m): ") or 2.0)
+trajectory_duration = float(input("Trajectory Duration Fly (s): ") or 10.0)
+override_speed = float(input("Override Speed (s): ") or 10.0)
 
 is_plotting = input("Plotting Diagram ? [Y/N] : ") or "Y"
 is_scanning = input("Scanning distance altitude with Lidar ? [Y/N] : ") or "Y"
