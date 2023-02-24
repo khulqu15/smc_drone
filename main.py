@@ -5,6 +5,9 @@ import smc
 print("[0] Simulation")
 print("[1] Testing")
 option = int(input("Choose one: "))
+print("[0] 57600")
+print("[1] 115200")
+baudrate = int(input("Choose baudrate: "))
 print("[0] Sliding Mode Control")
 print("[1] Kalman Filter & Sliding Mode Control")
 method = int(input("Choose one: "))
@@ -38,7 +41,7 @@ if wait_for_ready.lower() == 'y': waiting = True
 else: waiting = False
 
 try: 
-    vehicle = dronekit.connect(connections[int(option)], baud=baudrates[int(option)], wait_ready=waiting, timeout=60)
+    vehicle = dronekit.connect(connections[int(option)], baud=baudrates[int(baudrate)], wait_ready=waiting, timeout=60)
 except Exception as e:
     print("Failed to connect vehicle option : ", str(e))
     print("Trying to connect using ttyUSB0...")
