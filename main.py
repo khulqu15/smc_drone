@@ -4,13 +4,13 @@ import smc
 
 print("[0] Simulation")
 print("[1] Testing")
-option = int(input("Choose one: "))
+option = int(input("Choose one: ") or 1)
 print("[0] 57600")
 print("[1] 115200")
-baudrate = int(input("Choose baudrate: "))
+baudrate = int(input("Choose baudrate: ") or 0)
 print("[0] Sliding Mode Control")
 print("[1] Kalman Filter & Sliding Mode Control")
-method = int(input("Choose one: "))
+method = int(input("Choose one: ") or 1)
 connections = [
     "udp:127.0.0.1:14551",
     "/dev/ttyUSB0"
