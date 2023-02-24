@@ -26,6 +26,7 @@ override_speed = float(input("Override Speed (s): ") or 10.0)
 
 is_plotting = input("Plotting Diagram ? [Y/N] : ") or "Y"
 is_scanning = input("Scanning distance altitude with Lidar ? [Y/N] : ") or "Y"
+wait_for_ready = input("Wait Vehicle Ready ? [Y/N] : ") or "Y"
 
 if is_plotting.lower() == 'y': plotting = True
 else: plotting = False
@@ -33,8 +34,11 @@ else: plotting = False
 if is_scanning.lower() == 'y': scanning = True
 else: scanning = True
 
+if wait_for_ready.lower() == 'y': waiting = True
+else: waiting = False
+
 try: 
-    vehicle = dronekit.connect(connections[int(option)], baud=baudrates[int(option)], wait_ready=True, timeout=60)
+    vehicle = dronekit.connect(connections[int(option)], baud=baudrates[int(option)], wait_ready=waiting, timeout=60)
 except Exception as e:
     print("Failed to connect vehicle option : ", str(e))
     print("Trying to connect using ttyUSB0...")
