@@ -40,23 +40,23 @@ else: scanning = True
 if wait_for_ready.lower() == 'y': waiting = True
 else: waiting = False
 
-try:
-    print("Option : ", [connections[option], type(connections[option])], )
-    print("Baudrate : ", [baudrates[baudrate], type(baudrates[baudrate])])
-    print("Is Waiting : ", [waiting, type(waiting)])
-    vehicle = dronekit.connect(connections[option], baud=baudrates[baudrate], wait_ready=waiting, timeout=60)
-except Exception as e:
-    print("Failed to connect vehicle option : ", str(e))
-    print("Trying to connect other options...")
-    if option == 0: other_option = 1
-    else: other_option = 0
+# try:
+print("Option : ", [connections[option], type(connections[option])], )
+print("Baudrate : ", [baudrates[baudrate], type(baudrates[baudrate])])
+print("Is Waiting : ", [waiting, type(waiting)])
+vehicle = dronekit.connect(connections[option], baud=baudrates[baudrate], wait_ready=waiting, timeout=60)
+# except Exception as e:
+#     print("Failed to connect vehicle option : ", str(e))
+#     print("Trying to connect other options...")
+#     if option == 0: other_option = 1
+#     else: other_option = 0
     
-    try:
-        vehicle = dronekit.connect(connections[int(other_option)], wait_ready=True, timeout=60)
-        print("Connection successful!")
-    except Exception as e:
-        print("Connection failed: " + str(e))
-        exit(1)
+#     try:
+#         vehicle = dronekit.connect(connections[int(other_option)], wait_ready=True, timeout=60)
+#         print("Connection successful!")
+#     except Exception as e:
+#         print("Connection failed: " + str(e))
+#         exit(1)
 
 if method == 0:
     smc.arm_takeoff(vehicle, takeoff_alt, scanning, plotting)
