@@ -24,8 +24,8 @@ baudrates = [
 takeoff_alt = float(input("Takeoff Altitude (m): ") or 1.0)
 trajectory_alt = float(input("Trajectory Altitude (m): ") or 1.5)
 trajectory_distance = float(input("Trajectory Distance (m): ") or 2.0)
-trajectory_duration = float(input("Trajectory Duration Fly (s): ") or 10.0)
-override_speed = float(input("Override Speed (s): ") or 10.0)
+trajectory_duration = float(input("Trajectory Duration Fly (s): ") or 5.0)
+override_speed = float(input("Override Speed (s): ") or 5.0)
 
 is_plotting = input("Plotting Diagram ? [Y/N] : ") or "Y"
 is_scanning = input("Scanning distance altitude with Lidar ? [Y/N] : ") or "Y"

@@ -82,7 +82,7 @@ def arm_takeoff(vehicle, altitude, scanning, plotting):
         
         current_altitude = vehicle.location.global_relative_frame.alt
         altitude_error = altitude - current_altitude
-        throttle_value = int(1500 + altitude_error * speed)
+        throttle_value = int(1500 + altitude_error * 30)
         
         # Set the control channel override values
         vehicle.channels.overrides = {
@@ -198,7 +198,7 @@ def landing_disarm(vehicle, scanning, plotting):
         
         current_altitude = vehicle.location.global_relative_frame.alt
         altitude_error = u_alt - current_altitude
-        throttle_value = int(1500 + altitude_error * speed)
+        throttle_value = int(1500 + altitude_error * 35)
         
         vehicle.channels.overrides = {
             '1': int(1500 + u_control[0,0]), 
