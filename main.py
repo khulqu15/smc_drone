@@ -1,7 +1,8 @@
 import dronekit
 import smckf
+import smckf_autonomous
 import smc
-import autonomous
+import smc_autonomous
 import pymavlink
 import time
 
@@ -13,7 +14,8 @@ print("[1] 115200")
 baudrate = int(input("Choose baudrate: ") or 1)
 print("[0] Sliding Mode Control")
 print("[1] Kalman Filter & Sliding Mode Control")
-print("[2] Kalman Filter & Sliding Mode Control (Auto)")
+print("[2] Sliding Mode Control (Auto)")
+print("[3] Kalman Filter & Sliding Mode Control (Auto)")
 method = int(input("Choose one: ") or 2)
 connections = [
     "udp:127.0.0.1:14551",
@@ -94,25 +96,13 @@ elif method == 1 :
     smckf.arm_takeoff(vehicle, takeoff_alt, scanning, plotting)
     smckf.trajectory(vehicle, trajectory_alt, trajectory_distance, trajectory_duration, override_speed, scanning, plotting)
     smckf.landing_disarm(vehicle, scanning, plotting)
-else:
-    autonomous.arm_takeoff(vehicle, takeoff_alt, scanning, plotting)
-    autonomous.trajectory(vehicle, trajectory_alt, trajectory_distance, trajectory_duration, override_speed, scanning, plotting)
-    # Stop the drone's movement
-    vx = 0  # m/s
-    vy = 0  # m/s
-    vz = 0  # m/s
-
-    # Create a SET_POSITION_TARGET_LOCAL_NED message to stop the drone's movement
-    msg = vehicle.message_factory.set_position_target_local_ned_encode(
-        0,       # time_boot_ms (not used)
-        0, 0,    # target system, target component
-        pymavlink.mavutil.mavlink.MAV_FRAME_BODY_NED,  # frame
-        0b0000111111000000,  # type_mask (only position enabled)
-        0, 0, 0,             # x, y, z positions (not used)
-        0, 0, 0,             # x, y, z velocity (not used)
-        0, 0, 0,             # x, y, z acceleration (not used)
-        0, 0                 # yaw, yaw_rate (not used)
-    )
-    autonomous.landing_disarm(vehicle, scanning, plotting)
+elif method == 2:
+    smc_autonomous.arm_takeoff(vehicle, takeoff_alt, scanning, plotting)
+    smc_autonomous.trajectory(vehicle, trajectory_alt, trajectory_distance, trajectory_duration, override_speed, scanning, plotting)
+    smc_autonomous.landing_disarm(vehicle, scanning, plotting)
+elif method == 3:
+    smckf_autonomous.arm_takeoff(vehicle, takeoff_alt, scanning, plotting)
+    smckf_autonomous.trajectory(vehicle, trajectory_alt, trajectory_distance, trajectory_duration, override_speed, scanning, plotting)
+    smckf_autonomous.landing_disarm(vehicle, scanning, plotting)
     
 vehicle.close()

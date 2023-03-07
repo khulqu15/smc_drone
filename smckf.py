@@ -118,8 +118,15 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting)
     start_time = time.time()
     
     while True:
-        # Compute the desired position on the circle
-        ref = np.array([distance * np.cos(t), distance * np.sin(t)]).reshape(2,1) + np.array([[home_location.lat], [home_location.lon]])
+        # Compute the desired position on the square
+        if t < duration/4:
+            ref = np.array([distance, t*speed]).reshape(2,1) + np.array([[home_location.lat], [home_location.lon]])
+        elif t < duration/2:
+            ref = np.array([distance - (t - duration/4)*speed, distance]).reshape(2,1) + np.array([[home_location.lat], [home_location.lon]])
+        elif t < 3*duration/4:
+            ref = np.array([-distance, distance - (t - duration/2)*speed]).reshape(2,1) + np.array([[home_location.lat], [home_location.lon]])
+        elif t < duration:
+            ref = np.array([-distance + (t - 3*duration/4)*speed, -distance]).reshape(2,1) + np.array([[home_location.lat], [home_location.lon]])
 
         # Run the Kalman Filter to estimate the position and velocity
         state, cov = kalman_filter(u, cov, u_control, z, A, B, H, Q, R)
@@ -137,7 +144,7 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting)
         vehicle.channels.overrides = {
             '1': int(1500 + (u_control[0,0] * speed)), 
             '2': int(1500 + (u_control[1,0] * speed)), 
-            '3': throttle_value, 
+            '3': 1500, 
             '4': 1500
         }
 
