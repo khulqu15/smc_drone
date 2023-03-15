@@ -46,10 +46,17 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting)
     current_location = vehicle.location.global_relative_frame
     print("Trajectory")
     vehicle.mode = dronekit.VehicleMode("GUIDED")
-    desired_location1 = dronekit.LocationGlobalRelative(current_location.lat + distance/1000000, current_location.lon, altitude)
-    desired_location2 = dronekit.LocationGlobalRelative(current_location.lat, current_location.lon + distance/1000000, altitude)
-    desired_location3 = dronekit.LocationGlobalRelative(current_location.lat - distance/1000000, current_location.lon, altitude)
-    desired_location4 = dronekit.LocationGlobalRelative(current_location.lat, current_location.lon - distance/1000000, altitude)
+    # desired_location1 = dronekit.LocationGlobalRelative(current_location.lat + distance/1000000, current_location.lon, altitude)
+    # desired_location2 = dronekit.LocationGlobalRelative(current_location.lat, current_location.lon + distance/1000000, altitude)
+    # desired_location3 = dronekit.LocationGlobalRelative(current_location.lat - distance/1000000, current_location.lon, altitude)
+    # desired_location4 = dronekit.LocationGlobalRelative(current_location.lat, current_location.lon - distance/1000000, altitude)
+    
+    desired_location1 = dronekit.LocationGlobalRelative(-7.276724, 112.794938, altitude)
+    desired_location2 = dronekit.LocationGlobalRelative(-7.276724, 112.794960, altitude)
+    desired_location3 = dronekit.LocationGlobalRelative(-7.276742, 112.794958, altitude)
+    desired_location4 = dronekit.LocationGlobalRelative(-7.276746, 112.794940, altitude)
+    desired_location5 = dronekit.LocationGlobalRelative(-7.276724, 112.794938, altitude)
+    
     vehicle.simple_goto(desired_location1)
     while True:
         estimation_position = get_position_estimation(vehicle.location.global_relative_frame)
@@ -62,7 +69,7 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting)
         if plotting: plot.save(vehicle.location.global_relative_frame, estimation_position)
         print("---------------------------------------------------------------------------")
 
-        if abs(target_distance) <= 1:
+        if drone_location.lat == desired_location1.lat and drone_location.lon == desired_location1.lon:
             break
 
     time.sleep(duration)
@@ -77,7 +84,7 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting)
         if scanning: print("Lidar Sensor Distance (m)", vehicle.location.global_relative_frame.alt)
         if plotting: plot.save(vehicle.location.global_relative_frame, estimation_position)
         print("---------------------------------------------------------------------------")
-        if target_distance <= 1/1000000:
+        if drone_location.lat == desired_location2.lat and drone_location.lon == desired_location2.lon:
             break
         
     time.sleep(duration)
@@ -92,7 +99,7 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting)
         if scanning: print("Lidar Sensor Distance (m)", vehicle.location.global_relative_frame.alt)
         if plotting: plot.save(vehicle.location.global_relative_frame, estimation_position)
         print("---------------------------------------------------------------------------")
-        if target_distance <= 1/1000000:
+        if drone_location.lat == desired_location3.lat and drone_location.lon == desired_location3.lon:
             break
     
     time.sleep(duration)
@@ -107,7 +114,23 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting)
         if scanning: print("Lidar Sensor Distance (m)", vehicle.location.global_relative_frame.alt)
         if plotting: plot.save(vehicle.location.global_relative_frame, estimation_position)
         print("---------------------------------------------------------------------------")
-        if target_distance <= 1/1000000:
+        if drone_location.lat == desired_location4.lat and drone_location.lon == desired_location4.lon:
+            break
+        
+    time.sleep(duration)
+    
+    vehicle.simple_goto(desired_location5)
+    while True:
+        estimation_position = get_position_estimation(vehicle.location.global_relative_frame)
+        drone_location = vehicle.location.global_relative_frame
+        target_distance = desired_location5.lon - drone_location.lon
+        print("Trajectory : ")
+        print("Target Distance: ", target_distance)
+        print(vehicle.location.global_relative_frame)
+        if scanning: print("Lidar Sensor Distance (m)", vehicle.location.global_relative_frame.alt)
+        if plotting: plot.save(vehicle.location.global_relative_frame, estimation_position)
+        print("---------------------------------------------------------------------------")
+        if drone_location.lat == desired_location5.lat and drone_location.lon == desired_location5.lon:
             break
         
     time.sleep(duration)

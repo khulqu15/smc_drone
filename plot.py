@@ -27,7 +27,7 @@ def save(location, estimation):
     est_longitude_history.append(estimation.lon)
     est_altitude_history.append(estimation.alt)
     
-def show(filename="3d_plot.png"):
+def show(filename="3d_plot.png", is_show=False):
     global latitude_history
     global longitude_history
     global altitude_history
@@ -62,4 +62,5 @@ def show(filename="3d_plot.png"):
         f.write(csv)
 
     plt.savefig(filename)
-    plt.show()
+    if is_show:
+        plt.show()
