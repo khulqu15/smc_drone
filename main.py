@@ -8,15 +8,19 @@ import time
 
 print("[0] Simulation")
 print("[1] Testing")
-option = int(input("Choose one: ") or 0)
+option = int(input("Choose one: ") or 1)
 print("[0] 57600")
 print("[1] 115200")
-baudrate = int(input("Choose baudrate: ") or 1)
+baudrate = int(input("Choose baudrate: ") or 0)
 print("[0] Sliding Mode Control")
 print("[1] Kalman Filter & Sliding Mode Control")
 print("[2] Sliding Mode Control (Auto)")
 print("[3] Kalman Filter & Sliding Mode Control (Auto)")
-method = int(input("Choose one: ") or 2)
+method = int(input("Choose one: ") or 3)
+print("[0] Default")
+print("[1] Red Field")
+print("[2] Basket Fiedl")
+environment = int(input("Choose environment: ") or 0)
 connections = [
     "udp:127.0.0.1:14551",
     "/dev/ttyUSB0"
@@ -27,11 +31,11 @@ baudrates = [
     115200,
 ]
 
-takeoff_alt = float(input("Takeoff Altitude (m): ") or 2)
-trajectory_alt = float(input("Trajectory Altitude (m): ") or 3)
-trajectory_distance = float(input("Trajectory Distance (m): ") or 30)
+takeoff_alt = float(input("Takeoff Altitude (m): ") or 1)
+trajectory_alt = float(input("Trajectory Altitude (m): ") or 1)
+trajectory_distance = float(input("Trajectory Distance (m): ") or 10)
 trajectory_duration = float(input("Trajectory Duration Fly (s): ") or 5)
-override_speed = float(input("Override Speed (s): ") or 5)
+override_speed = float(input("Override Speed (s): ") or 10)
 
 is_plotting = input("Plotting Diagram ? [Y/N] : ") or "Y"
 is_scanning = input("Scanning distance altitude with Lidar ? [Y/N] : ") or "Y"
@@ -65,27 +69,27 @@ vehicle = dronekit.connect(connections[option], baud=baudrates[baudrate], wait_r
 #         exit(1)
 
 # Set the drone's velocity in the x, y, and z directions
-vx = 1  # m/s
-vy = 1  # m/s
-vz = 1  # m/s
+# vx = 1  # m/s
+# vy = 1  # m/s
+# vz = 1  # m/s
 
-# Create a SET_POSITION_TARGET_LOCAL_NED message
-msg = vehicle.message_factory.set_position_target_local_ned_encode(
-    0,       # time_boot_ms (not used)
-    0, 0,    # target system, target component
-    pymavlink.mavutil.mavlink.MAV_FRAME_BODY_NED,  # frame
-    0b0000111111000111,  # type_mask (only speeds enabled)
-    0, 0, 0,             # x, y, z positions (not used)
-    vx, vy, vz,          # x, y, z velocity in m/s
-    0, 0, 0,             # x, y, z acceleration (not used)
-    0, 0                 # yaw, yaw_rate (not used)
-)
+# # Create a SET_POSITION_TARGET_LOCAL_NED message
+# msg = vehicle.message_factory.set_position_target_local_ned_encode(
+#     0,       # time_boot_ms (not used)
+#     0, 0,    # target system, target component
+#     pymavlink.mavutil.mavlink.MAV_FRAME_BODY_NED,  # frame
+#     0b0000111111000111,  # type_mask (only speeds enabled)
+#     0, 0, 0,             # x, y, z positions (not used)
+#     vx, vy, vz,          # x, y, z velocity in m/s
+#     0, 0, 0,             # x, y, z acceleration (not used)
+#     0, 0                 # yaw, yaw_rate (not used)
+# )
 
 # Send the message
-vehicle.send_mavlink(msg)
+# vehicle.send_mavlink(msg)
 
 # Wait for 10 seconds
-time.sleep(10)
+# time.sleep(10)
 
 
 if method == 0:
@@ -102,7 +106,7 @@ elif method == 2:
     smc_autonomous.landing_disarm(vehicle, scanning, plotting)
 elif method == 3:
     smckf_autonomous.arm_takeoff(vehicle, takeoff_alt, scanning, plotting)
-    smckf_autonomous.trajectory(vehicle, trajectory_alt, trajectory_distance, trajectory_duration, override_speed, scanning, plotting)
+    smckf_autonomous.trajectory(vehicle, trajectory_alt, trajectory_distance, trajectory_duration, override_speed, scanning, plotting, environment)
     smckf_autonomous.landing_disarm(vehicle, scanning, plotting)
     
 vehicle.close()

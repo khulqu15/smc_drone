@@ -41,21 +41,31 @@ def arm_takeoff(vehicle, altitude, scanning, plotting):
         
         time.sleep(0.1)
 
-def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting):
+def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting, environment):
     global current_location
     current_location = vehicle.location.global_relative_frame
     print("Trajectory")
     vehicle.mode = dronekit.VehicleMode("GUIDED")
-    # desired_location1 = dronekit.LocationGlobalRelative(current_location.lat + distance/1000000, current_location.lon, altitude)
-    # desired_location2 = dronekit.LocationGlobalRelative(current_location.lat, current_location.lon + distance/1000000, altitude)
-    # desired_location3 = dronekit.LocationGlobalRelative(current_location.lat - distance/1000000, current_location.lon, altitude)
-    # desired_location4 = dronekit.LocationGlobalRelative(current_location.lat, current_location.lon - distance/1000000, altitude)
+    if environment == 0:
+        desired_location1 = dronekit.LocationGlobalRelative(current_location.lat, current_location.lon, altitude)
+        desired_location1 = dronekit.LocationGlobalRelative(current_location.lat + distance/1000000, current_location.lon, altitude)
+        desired_location2 = dronekit.LocationGlobalRelative(current_location.lat, current_location.lon + distance/1000000, altitude)
+        desired_location3 = dronekit.LocationGlobalRelative(current_location.lat - distance/1000000, current_location.lon, altitude)
+        desired_location4 = dronekit.LocationGlobalRelative(current_location.lat, current_location.lon - distance/1000000, altitude)
     
-    desired_location1 = dronekit.LocationGlobalRelative(-7.276724, 112.794938, altitude)
-    desired_location2 = dronekit.LocationGlobalRelative(-7.276724, 112.794960, altitude)
-    desired_location3 = dronekit.LocationGlobalRelative(-7.276742, 112.794958, altitude)
-    desired_location4 = dronekit.LocationGlobalRelative(-7.276746, 112.794940, altitude)
-    desired_location5 = dronekit.LocationGlobalRelative(-7.276724, 112.794938, altitude)
+    if environment == 1:
+        desired_location1 = dronekit.LocationGlobalRelative(-7.276724, 112.794938, altitude)
+        desired_location2 = dronekit.LocationGlobalRelative(-7.276724, 112.794960, altitude)
+        desired_location3 = dronekit.LocationGlobalRelative(-7.276742, 112.794958, altitude)
+        desired_location4 = dronekit.LocationGlobalRelative(-7.276746, 112.794940, altitude)
+        desired_location5 = dronekit.LocationGlobalRelative(-7.276724, 112.794938, altitude)
+    
+    if environment == 2:    
+        desired_location1 = dronekit.LocationGlobalRelative(-7.276613, 112.793801, altitude)
+        desired_location2 = dronekit.LocationGlobalRelative(-7.276617, 112.793834, altitude)
+        desired_location3 = dronekit.LocationGlobalRelative(-7.276645, 112.793832, altitude)
+        desired_location4 = dronekit.LocationGlobalRelative(-7.276645, 112.793801, altitude)
+        desired_location5 = dronekit.LocationGlobalRelative(-7.276613, 112.793801, altitude)
     
     vehicle.simple_goto(desired_location1)
     while True:
