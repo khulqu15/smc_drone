@@ -2,24 +2,31 @@ import matplotlib
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import pandas as pd
-
+from datetime import datetime
 # matplotlib.use('Agg')
 
 latitude_history = []
 longitude_history = []
 altitude_history = []
 
+output_csv = None
+altitude_status = 0
+category_status = None
 est_latitude_history = []
 est_longitude_history = []
 est_altitude_history = []
 
-def save(location, estimation):
+def save(location, estimation, category, altitude):
     global latitude_history
     global longitude_history
     global altitude_history
     global est_latitude_history
     global est_longitude_history
     global est_altitude_history
+    global altitude_status
+    global category_status
+    altitude_status = altitude
+    category_status = category
     latitude_history.append(location.lat)
     longitude_history.append(location.lon)
     altitude_history.append(location.alt)
@@ -34,6 +41,8 @@ def show(filename="3d_plot.png", is_show=False):
     global est_latitude_history
     global est_longitude_history
     global est_altitude_history
+    global altitude_status
+    global category_status
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.set_label("Latitude")
@@ -53,7 +62,10 @@ def show(filename="3d_plot.png", is_show=False):
         'Est. Altitude': est_altitude_history
     })
     
-    writer = pd.ExcelWriter('data.xlsx', engine='xlsxwriter')
+    now = datetime.now().strftime("%d_%m_%Y_%H_%M_%S")
+    output_csv = now+"_"+category_status+"_"+str(altitude_status)+".xlsx"
+    
+    writer = pd.ExcelWriter(output_csv, engine='xlsxwriter')
     df.to_excel(writer, sheet_name='Sheet1', index=False)
     writer.save()
     
