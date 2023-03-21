@@ -65,6 +65,8 @@ def show(filename="3d_plot.png", is_show=False):
     now = datetime.now().strftime("%d_%m_%Y_%H_%M_%S")
     output_csv = now+"_"+category_status+"_"+str(altitude_status)+".xlsx"
     
+    new_filename = now+"_"+category_status+"_"+str(altitude_status)+"_"+filename
+    
     writer = pd.ExcelWriter(output_csv, engine='xlsxwriter')
     df.to_excel(writer, sheet_name='Sheet1', index=False)
     writer.save()
@@ -73,6 +75,7 @@ def show(filename="3d_plot.png", is_show=False):
     with open('data.csv', 'w') as f:
         f.write(csv)
 
+    plt.savefig(new_filename)
     plt.savefig(filename)
     if is_show:
         plt.show()
