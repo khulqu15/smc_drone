@@ -82,12 +82,8 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting,
         if plotting: plot.save(vehicle.location.global_relative_frame, estimation_position, "SMC_AUTO", altitude)
         print("---------------------------------------------------------------------------")
         elapsed_time = time.time() - start_time
-        if environment == 0:
-            if elapsed_time >= duration:
-                break
-        else :
-            if drone_location.lat == desired_location1.lat and drone_location.lon == desired_location1.lon:
-                break
+        if elapsed_time >= duration:
+            break
         time.sleep(1)
         
     start_time = time.time()
@@ -105,9 +101,6 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting,
         elapsed_time = time.time() - start_time
         if elapsed_time >= duration:
             break
-        else :
-            if drone_location.lat == desired_location1.lat and drone_location.lon == desired_location1.lon:
-                break 
         time.sleep(1)
     
     start_time = time.time()
@@ -125,9 +118,6 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting,
         elapsed_time = time.time() - start_time
         if elapsed_time >= duration:
             break
-        else :
-            if drone_location.lat == desired_location1.lat and drone_location.lon == desired_location1.lon:
-                break        
         time.sleep(1)
     
     start_time = time.time()
@@ -145,9 +135,6 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting,
         elapsed_time = time.time() - start_time
         if elapsed_time >= duration:
             break
-        else :
-            if drone_location.lat == desired_location1.lat and drone_location.lon == desired_location1.lon:
-                break
         time.sleep(1)
         
         
@@ -166,9 +153,6 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting,
         elapsed_time = time.time() - start_time
         if elapsed_time >= duration:
             break
-        else :
-            if drone_location.lat == desired_location1.lat and drone_location.lon == desired_location1.lon:
-                break
         time.sleep(1)
               
 def landing_disarm(vehicle, scanning, plotting):

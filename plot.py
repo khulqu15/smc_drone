@@ -76,6 +76,5 @@ def show(filename="3d_plot.png", is_show=False):
         f.write(csv)
 
     plt.savefig(new_filename)
-    plt.savefig(filename)
     if is_show:
         plt.show()
