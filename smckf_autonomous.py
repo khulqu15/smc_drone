@@ -76,6 +76,7 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting,
         print("Trajectory : ")
         print("Target Distance: ", target_distance)
         print(vehicle.location.global_relative_frame)
+        print("Attitude : ", vehicle.attitude)
         if scanning: print("Lidar Sensor Distance (m)", vehicle.location.global_relative_frame.alt)
         if plotting: plot.save(vehicle.location.global_relative_frame, estimation_position, "SMCKF_AUTO", altitude)
         print("---------------------------------------------------------------------------")
@@ -93,6 +94,7 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting,
         print("Trajectory : ")
         print("Target Distance: ", target_distance)
         print(vehicle.location.global_relative_frame)
+        print("Attitude : ", vehicle.attitude)
         if scanning: print("Lidar Sensor Distance (m)", vehicle.location.global_relative_frame.alt)
         if plotting: plot.save(vehicle.location.global_relative_frame, estimation_position, "SMCKF_AUTO", altitude)
         print("---------------------------------------------------------------------------")
@@ -109,6 +111,7 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting,
         target_distance = desired_location3.lat - drone_location.lat
         print("Trajectory : ")
         print("Target Distance: ", target_distance)
+        print("Attitude : ", vehicle.attitude)
         print(vehicle.location.global_relative_frame)
         if scanning: print("Lidar Sensor Distance (m)", vehicle.location.global_relative_frame.alt)
         if plotting: plot.save(vehicle.location.global_relative_frame, estimation_position, "SMCKF_AUTO", altitude)
@@ -126,6 +129,7 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting,
         target_distance = desired_location4.lon - drone_location.lon
         print("Trajectory : ")
         print("Target Distance: ", target_distance)
+        print("Attitude : ", vehicle.attitude)
         print(vehicle.location.global_relative_frame)
         if scanning: print("Lidar Sensor Distance (m)", vehicle.location.global_relative_frame.alt)
         if plotting: plot.save(vehicle.location.global_relative_frame, estimation_position, "SMCKF_AUTO", altitude)
@@ -144,6 +148,7 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting,
         target_distance = desired_location5.lon - drone_location.lon
         print("Trajectory : ")
         print("Target Distance: ", target_distance)
+        print("Attitude : ", vehicle.attitude)
         print(vehicle.location.global_relative_frame)
         if scanning: print("Lidar Sensor Distance (m)", vehicle.location.global_relative_frame.alt)
         if plotting: plot.save(vehicle.location.global_relative_frame, estimation_position, "SMCKF_AUTO", altitude)
@@ -162,6 +167,7 @@ def landing_disarm(vehicle, scanning, plotting):
         print(vehicle.location.global_relative_frame)
         if scanning: print("Lidar Sensor Distance (m)", vehicle.location.global_relative_frame.alt)
         if plotting: plot.save(vehicle.location.global_relative_frame, estimation_position, "SMCKF_AUTO", vehicle.location.global_relative_frame.alt)
+        print("Attitude : ", vehicle.attitude)
         print("---------------------------------------------------------------------------")
         
         if vehicle.location.global_relative_frame.alt <= 0.2:
