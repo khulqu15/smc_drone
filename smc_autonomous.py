@@ -45,6 +45,7 @@ def arm_takeoff(vehicle, altitude, scanning, plotting):
 
 def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting, environment):
     global current_location
+    vehicle.groundspeed = 15
     current_location = vehicle.location.global_relative_frame
     print("Trajectory")
     vehicle.mode = dronekit.VehicleMode("GUIDED")
