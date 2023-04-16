@@ -6,7 +6,7 @@ import smc_autonomous
 
 print("[0] Simulation")
 print("[1] Testing")
-option = int(input("Choose one: ") or 1)
+option = int(input("Choose one: ") or 2)
 print("[0] 57600")
 print("[1] 115200")
 baudrate = int(input("Choose baudrate: ") or 0)
@@ -53,7 +53,8 @@ print("Baudrate : ", [baudrates[baudrate], type(baudrates[baudrate])])
 print("Is Waiting : ", [waiting, type(waiting)])
 vehicle = dronekit.connect(connections[option], baud=baudrates[baudrate], wait_ready=waiting, timeout=60)
 
-
+if option == 2:
+    smc.landing_disarm(vehicle, False, False)
 if method == 0:
     smc.arm_takeoff(vehicle, takeoff_alt, scanning, plotting)
     smc.trajectory(vehicle, trajectory_alt, trajectory_distance, trajectory_duration, override_speed, scanning, plotting)
