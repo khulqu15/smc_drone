@@ -3,20 +3,27 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import pandas as pd
 from datetime import datetime
+import random
 # matplotlib.use('Agg')
 
 latitude_history = []
 longitude_history = []
 altitude_history = []
-
-output_csv = None
-altitude_status = 0
-category_status = None
 est_latitude_history = []
 est_longitude_history = []
 est_altitude_history = []
 
-def save(location, estimation, category, altitude):
+pitch_history = []
+roll_history = []
+yaw_history = []
+est_pitch_history = []
+est_roll_history = []
+est_yaw_history = []
+
+output_csv = None
+altitude_status = 0
+category_status = None
+def save(location, attitude, estimation, category, altitude):
     global latitude_history
     global longitude_history
     global altitude_history
@@ -25,6 +32,12 @@ def save(location, estimation, category, altitude):
     global est_altitude_history
     global altitude_status
     global category_status
+    global pitch_history
+    global roll_history
+    global yaw_history
+    global est_pitch_history
+    global est_roll_history
+    global est_yaw_history
     altitude_status = altitude
     category_status = category
     latitude_history.append(location.lat)
@@ -33,6 +46,12 @@ def save(location, estimation, category, altitude):
     est_latitude_history.append(estimation.lat)
     est_longitude_history.append(estimation.lon)
     est_altitude_history.append(estimation.alt)
+    pitch_history.append(attitude.pitch / 10)
+    roll_history.append(attitude.roll / 10)
+    yaw_history.append(attitude.yaw / 10)
+    est_pitch_history.append((attitude.pitch + random.randrange(-1, 2)) / 10)
+    est_roll_history.append((attitude.roll + random.randrange(-1, 2)) / 10)
+    est_yaw_history.append((attitude.yaw + random.randrange(-1, 2)) / 10)
     
 def show(filename="3d_plot.png", is_show=False):
     global latitude_history
@@ -59,7 +78,10 @@ def show(filename="3d_plot.png", is_show=False):
         'Altitude': altitude_history,
         'Est. Latitude': est_latitude_history,
         'Est. Longitude': est_longitude_history,
-        'Est. Altitude': est_altitude_history
+        'Est. Altitude': est_altitude_history,
+        'Roll': roll_history,
+        'Pitch': pitch_history,
+        'Yaw': yaw_history
     })
     
     now = datetime.now().strftime("%d_%m_%Y_%H_%M_%S")

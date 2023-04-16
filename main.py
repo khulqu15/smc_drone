@@ -18,6 +18,7 @@ method = int(input("Choose one: ") or 3)
 print("[0] Relative Default")
 print("[1] Red Field")
 print("[2] Basket Field")
+print("[3] Departement of Physic ITS")
 environment = int(input("Choose environment: ") or 0)
 connections = [
     "udp:127.0.0.1:14551",

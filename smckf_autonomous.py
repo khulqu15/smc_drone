@@ -7,9 +7,9 @@ import random
 current_location = dronekit.LocationGlobalRelative(0,0,0)
 
 def get_position_estimation(location):
-    latitude = location.lat + (random.randrange(-5, 5) / 10000000)
-    longitude = location.lon + (random.randrange(-5, 5) / 10000000)
-    altitude = location.alt + (random.randrange(-5, 5) / 10000000)
+    latitude = location.lat + (random.uniform(-0.5, 0.5) / 10000000)
+    longitude = location.lon + (random.uniform(-0.5, 0.5) / 10000000)
+    altitude = location.alt + (random.uniform(-0.5, 5) / 10000000)
     estimation = dronekit.LocationGlobalRelative(latitude, longitude, altitude)
     print(estimation)
     return estimation
@@ -31,7 +31,7 @@ def arm_takeoff(vehicle, altitude, scanning, plotting):
         print("Take Off Data : ")
         print(vehicle.location.global_relative_frame)
         if scanning: print("Lidar Sensor Distance (m)", vehicle.location.global_relative_frame.alt)
-        if plotting: plot.save(vehicle.location.global_relative_frame, estimation_position, "SMCKF_AUTO", altitude)
+        if plotting: plot.save(vehicle.location.global_relative_frame, vehicle.attitude, estimation_position, "SMCKF_AUTO", altitude)
         print("---------------------------------------------------------------------------")
 
         
@@ -67,6 +67,13 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting,
         desired_location4 = dronekit.LocationGlobalRelative(-7.276645, 112.793801, altitude)
         desired_location5 = dronekit.LocationGlobalRelative(-7.276613, 112.793801, altitude)
     
+    if environment == 3:
+        desired_location1 = dronekit.LocationGlobalRelative(-7.283653, 112.796442, altitude)
+        desired_location2 = dronekit.LocationGlobalRelative(-7.283653, 112.796442, (altitude + 0.1))
+        desired_location3 = dronekit.LocationGlobalRelative(-7.283655, 112.796468, altitude)
+        desired_location4 = dronekit.LocationGlobalRelative(-7.283655, 112.796468, (altitude - 0.1))
+        desired_location5 = dronekit.LocationGlobalRelative(-7.283657, 112.796458, altitude)
+    
     vehicle.simple_goto(desired_location1)
     start_time = time.time()
     while True:
@@ -78,7 +85,7 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting,
         print(vehicle.location.global_relative_frame)
         print("Attitude : ", vehicle.attitude)
         if scanning: print("Lidar Sensor Distance (m)", vehicle.location.global_relative_frame.alt)
-        if plotting: plot.save(vehicle.location.global_relative_frame, estimation_position, "SMCKF_AUTO", altitude)
+        if plotting: plot.save(vehicle.location.global_relative_frame, vehicle.attitude, estimation_position, "SMCKF_AUTO", altitude)
         print("---------------------------------------------------------------------------")
         elapsed_time = time.time() - start_time
         if elapsed_time >= duration:
@@ -96,7 +103,7 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting,
         print(vehicle.location.global_relative_frame)
         print("Attitude : ", vehicle.attitude)
         if scanning: print("Lidar Sensor Distance (m)", vehicle.location.global_relative_frame.alt)
-        if plotting: plot.save(vehicle.location.global_relative_frame, estimation_position, "SMCKF_AUTO", altitude)
+        if plotting: plot.save(vehicle.location.global_relative_frame, vehicle.attitude, estimation_position, "SMCKF_AUTO", altitude)
         print("---------------------------------------------------------------------------")
         elapsed_time = time.time() - start_time
         if elapsed_time >= duration:
@@ -114,7 +121,7 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting,
         print("Attitude : ", vehicle.attitude)
         print(vehicle.location.global_relative_frame)
         if scanning: print("Lidar Sensor Distance (m)", vehicle.location.global_relative_frame.alt)
-        if plotting: plot.save(vehicle.location.global_relative_frame, estimation_position, "SMCKF_AUTO", altitude)
+        if plotting: plot.save(vehicle.location.global_relative_frame, vehicle.attitude, estimation_position, "SMCKF_AUTO", altitude)
         print("---------------------------------------------------------------------------")
         elapsed_time = time.time() - start_time
         if elapsed_time >= duration:
@@ -132,7 +139,7 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting,
         print("Attitude : ", vehicle.attitude)
         print(vehicle.location.global_relative_frame)
         if scanning: print("Lidar Sensor Distance (m)", vehicle.location.global_relative_frame.alt)
-        if plotting: plot.save(vehicle.location.global_relative_frame, estimation_position, "SMCKF_AUTO", altitude)
+        if plotting: plot.save(vehicle.location.global_relative_frame, vehicle.attitude, estimation_position, "SMCKF_AUTO", altitude)
         print("---------------------------------------------------------------------------")
         elapsed_time = time.time() - start_time
         if elapsed_time >= duration:
@@ -151,7 +158,7 @@ def trajectory(vehicle, altitude, distance, duration, speed, scanning, plotting,
         print("Attitude : ", vehicle.attitude)
         print(vehicle.location.global_relative_frame)
         if scanning: print("Lidar Sensor Distance (m)", vehicle.location.global_relative_frame.alt)
-        if plotting: plot.save(vehicle.location.global_relative_frame, estimation_position, "SMCKF_AUTO", altitude)
+        if plotting: plot.save(vehicle.location.global_relative_frame, vehicle.attitude, estimation_position, "SMCKF_AUTO", altitude)
         print("---------------------------------------------------------------------------")
         elapsed_time = time.time() - start_time
         if elapsed_time >= duration:
@@ -166,7 +173,7 @@ def landing_disarm(vehicle, scanning, plotting):
         print("Landing : ")
         print(vehicle.location.global_relative_frame)
         if scanning: print("Lidar Sensor Distance (m)", vehicle.location.global_relative_frame.alt)
-        if plotting: plot.save(vehicle.location.global_relative_frame, estimation_position, "SMCKF_AUTO", vehicle.location.global_relative_frame.alt)
+        if plotting: plot.save(vehicle.location.global_relative_frame, vehicle.attitude, estimation_position, "SMCKF_AUTO", vehicle.location.global_relative_frame.alt)
         print("Attitude : ", vehicle.attitude)
         print("---------------------------------------------------------------------------")
         
